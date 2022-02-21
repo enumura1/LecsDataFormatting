@@ -1,2 +1,2 @@
 # arangeC
-データの書き出しリポジトリ
+Data export repository
