@@ -1,6 +1,6 @@
 //シート別授業科目一覧の棟・教室の書き込み率評価(%)
 function evaluationWriteRate () {
-  const spreadSheet_id_kamokuItiran = SpreadsheetApp.openById("1ZktPKxYWmSwW89Jl_Ir5FS3QxkpeDJgJ16UzaBRDF1g");
+  const spreadSheet_id_kamokuItiran = SpreadsheetApp.openById("14Tu3h4hfHlT1Db8DaFzgVyQ4bmpuLmLzeAs30QyNCUU");
   const gakubuNameArray = ['法文','教育','総合理工','生物資源','人間科学','教養教育','人文科学','総合理工（博士後期）',
   '教育学（教職）','自然科学','人間社会科学', '教育学'];
 
