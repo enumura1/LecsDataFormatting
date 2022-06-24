@@ -19,7 +19,7 @@ function read_haitoudata (faclty) {
   const sheetName = spreadSheet_id_haitou.getSheetByName("データ一覧");
   let countRow = sheetName.getLastRow();
   
-  for (let step = 1; step < 230; step++) {
+  for (let step =1; step < 1300; step++) {
     //曜日・時限
     let day_periodTimeCell = sheetName.getSheetValues(step,1,1,1);
     let day_periodTime = day_periodTimeCell[0][0];
@@ -90,16 +90,15 @@ function read_haitoudata (faclty) {
     let unifiedStyle = wordFormatFullTohalf(subjectValue_3);
     //Ⅰ,Ⅱ,Ⅲ → 1,2,3で入れ替え
     let subject = changeSymbolToNumber(unifiedStyle)
-    console.log('講義データ：'+subject)
 
     //担当
     let is_tantouBlank = sheetName.getRange(step,3).isBlank();
     let tantouCell = sheetName.getSheetValues(step,3,1,1);
     let tantouValue_0 = tantouCell[0][0];
     let tantouValue_1 = '';
-    //空白セルかどうか
-    if(is_tantouBlank==false){ tantouValue_1 = tantouValue_0};
 
+    //空白セルかどうか
+    is_tantouBlank==false　? tantouValue_1 = tantouValue_0:false;
     //空白(全角半角)チェック
     let full_half_blank = checkBlank(tantouValue_1);
     //カンマチェック
@@ -109,7 +108,7 @@ function read_haitoudata (faclty) {
 
     let firstCharacter = '';
     let removedSpace = '';
-    let resizedKatakana = '';
+    let deletedComma= ''
     let tantou = '';
 
     //先頭大文字英語、〇、＊(全角)、*(全角)チェック
@@ -118,28 +117,26 @@ function read_haitoudata (faclty) {
       //全角半角空白あり
       if (full_half_blank != -1){
         removedSpace = firstCharacter.replace(/\s+/g, '');
-        //カンマ除去
+        // , あり
         if(comma != -1) {
+          deletedComma = removedSpace.replace(/，/g,'');
           //半角カタカナの有無チェック
-          isHankakuKana(removedSpace) == true ? resizedKatakana = katakanaSizeHalfToFull(removedSpace):resizedKatakana =removedSpace;
-          tantou = resizedKatakana.replace(/，/g,'');
+          isHankakuKana(deletedComma) == true ? tantou = katakanaSizeHalfToFull(deletedComma):tantou =deletedComma;
         }else {
           //半角カタカナの有無チェック
-          isHankakuKana(removedSpace) == true ? resizedKatakana = katakanaSizeHalfToFull(removedSpace):resizedKatakana =removedSpace;
-          tantou = resizedKatakana.replace(/，/g,'');
+          isHankakuKana(deletedComma) == true ? tantou = katakanaSizeHalfToFull(removedSpace):tantou =removedSpace;
         }
       //全角半角空白無し
       }else{
         removedSpace = firstCharacter;
         // , あり
         if(comma != -1) {
+          deletedComma = removedSpace.replace(/，/g,'');
           //半角カタカナの有無チェック
-          isHankakuKana(removedSpace) == true ? resizedKatakana = katakanaSizeHalfToFull(removedSpace):resizedKatakana =removedSpace;
-          tantou = resizedKatakana.replace(/，/g,'');
+          isHankakuKana(deletedComma) == true ? tantou = katakanaSizeHalfToFull(deletedComma):tantou =deletedComma;
         }else {
           //半角カタカナの有無チェック
-          isHankakuKana(removedSpace) == true ? resizedKatakana = katakanaSizeHalfToFull(removedSpace):resizedKatakana =removedSpace;
-          tantou = resizedKatakana.replace(/，/g,'');
+          isHankakuKana(deletedComma) == true ? tantou = katakanaSizeHalfToFull(removedSpace):tantou =removedSpace;
         }
       }
     }else{
@@ -149,30 +146,27 @@ function read_haitoudata (faclty) {
          removedSpace = firstCharacter.replace(/\s+/g, '');
         // ,あり
         if(comma != -1) {
+          deletedComma = removedSpace.replace(/，/g,'');
           //半角カタカナの有無チェック
-          isHankakuKana(removedSpace) == true ? resizedKatakana = katakanaSizeHalfToFull(removedSpace):resizedKatakana =removedSpace;
-          tantou = resizedKatakana.replace(/，/g,'');
+          isHankakuKana(deletedComma) == true ? tantou = katakanaSizeHalfToFull(deletedComma):tantou =deletedComma;
         }else {
           //半角カタカナの有無チェック
-          isHankakuKana(removedSpace) == true ? resizedKatakana = katakanaSizeHalfToFull(removedSpace):resizedKatakana =removedSpace;
-          tantou = resizedKatakana.replace(/，/g,'');
+          isHankakuKana(deletedComma) == true ? tantou = katakanaSizeHalfToFull(removedSpace):tantou =removedSpace;
         }
       //全角半角空白無し
       }else{
          removedSpace = firstCharacter;
         // , あり
         if(comma != -1) {
+          deletedComma = removedSpace.replace(/，/g,'');
           //半角カタカナの有無チェック
-          isHankakuKana(removedSpace) == true ? resizedKatakana = katakanaSizeHalfToFull(removedSpace):resizedKatakana =removedSpace;
-          tantou = resizedKatakana.replace(/，/g,'');
+          isHankakuKana(deletedComma) == true ? tantou = katakanaSizeHalfToFull(deletedComma):tantou =deletedComma;
         }else {
           //半角カタカナの有無チェック
-          isHankakuKana(removedSpace) == true ? resizedKatakana = katakanaSizeHalfToFull(removedSpace):resizedKatakana =removedSpace;
-          tantou = resizedKatakana.replace(/，/g,'');
+          isHankakuKana(deletedComma) == true ? tantou = katakanaSizeHalfToFull(removedSpace):tantou =removedSpace;
         }
       }
     }
-    console.log('担当：'+tantou)
 
     //棟名
     let buildingCell = sheetName.getSheetValues(step,6,1,1);
@@ -189,7 +183,6 @@ function read_haitoudata (faclty) {
     //追加配列:[曜日・時限],[科目名],[担当],[棟名],[教室名],[時間割コード]
     let add_haitou_array = [day_periodTime,subject,tantou,buildingName,classroomName,timeCode];
     haitou_data_array.push(add_haitou_array);
-    if (step % 100 === 0) {console.log(step)}
   }
 
   //関数read_courseItiran_data実行
@@ -247,24 +240,26 @@ function read_courseItiran_data (faclty) {
       //全角英語,数字→半角に統一
       let checkedHankaku = wordFormatFullTohalf(chekcedKoron);
       let subject_cource = changeSymbolToNumber(checkedHankaku);
-      console.log('科目一覧科目名'+subject_cource)
 
       //担当
       let tantouCell_cource = sheetNameGakubu.getSheetValues(step,7,1,1);
-      let tantouValue_cource_0 = tantouCell_cource[0][0];
-      console.log('科目一覧担当'+tantouValue_cource_0)
+      let tantouCourceValue = tantouCell_cource[0][0];
+      let resizedKatakana = '';
+
+      //半角カタカナの有無チェック
+      isHankakuKana(tantouCourceValue) == true ? resizedKatakana = katakanaSizeHalfToFull(tantouCourceValue):resizedKatakana =tantouCourceValue;
 
       //空白チェック
-      let fullHalf_blank_cource = checkBlank(tantouValue_cource_0);
+      let fullHalf_blank_cource = checkBlank(resizedKatakana);
 
       //カンマ(全角)
-      let fullFormatComma = tantouValue_cource_0.search(/，/);
+      let fullFormatComma = resizedKatakana.search(/，/);
       let tantouValue_cource_1 = '';
       let tantou_cource = '';
 
       if(fullHalf_blank_cource != -1) {
         //空白を削除
-        tantouValue_cource_1 = tantouValue_cource_0.replace(/\s+/g,'');
+        tantouValue_cource_1 = resizedKatakana.replace(/\s+/g,'');
         // , チェック
         if(fullFormatComma != -1) {
           tantou_cource = tantouValue_cource_1.replace(/，/g,'');
@@ -272,7 +267,7 @@ function read_courseItiran_data (faclty) {
           tantou_cource = tantouValue_cource_1
         }
       } else {
-        tantouValue_cource_1 = tantouValue_cource_0;
+        tantouValue_cource_1 = resizedKatakana;
         // , チェック
         if(fullFormatComma != -1) {
           tantou_cource = tantouValue_cource_1.replace(/，/g,'');
