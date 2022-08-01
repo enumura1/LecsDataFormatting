@@ -1,59 +1,65 @@
-//ダウンロードダイヤログ表示
-function toJSON() {
-  //ダイヤログテンプレート読み込み
-  let dl_html = HtmlService.createTemplateFromFile("dl_dialog").evaluate();
-
-  //ダイヤログ表示
-  SpreadsheetApp.getUi().showModalDialog(dl_html, "JSONファイルをダウンロード");
-}
-
 //データ取得
-function getData() {
-  //データ取得するシート（現在開いているシートを指定）
-  let sheet = SpreadsheetApp.getActiveSheet();
+function fetchData(faculty) {
+  //書き込みシート
+  const sheet = SpreadsheetApp.openById("14Tu3h4hfHlT1Db8DaFzgVyQ4bmpuLmLzeAs30QyNCUU");
+  //出力先
+  const gasTestFolder = '1EC7yF9Y-PDDHTkmDNqjTVoraqKZV949W';
+  //学部ごとに実行させる
+  const sheetName = sheet.getSheetByName(faculty);
 
   //行（横軸）と列（縦軸）の最大数を取得
-  let maxRow = sheet.getLastRow();
-  let maxColumn = sheet.getLastColumn();
+  let maxRow = sheetName.getLastRow();
+  let maxColumn = sheetName.getLastColumn();
 
   //JSON用のkey
   let keys = [];
-
-  //データ格納配列
+  //データ格納
   let data = [];
 
-  //2行目のkeyの名前取得
-  //1行目は管理しやすいよう日本語で記述し、
-  //JSON用のラベルは2行目で指定しているため
-  //【getRange】の第1引数は【2】
-  for (var x = 1; x <= maxColumn; x++) {
-    keys.push(sheet.getRange(2, x).getValue());
+  //１行目の'時間割所属'～'教室名'をjsonのkeyとして取得
+  for (let x = 1; x <= maxColumn; x++) {
+    keys.push(sheetName.getRange(1, x).getValue());
   }
 
-  //データの取得
-  //実際のデータが3行目からなので【y = 3】から開始
-  for (var y = 3; y <= maxRow; y++) {
+  //列方向に2行目以下~シート書き込み最後最後の行までを取得
+  for (let y = 2; y <= maxRow; y++) {
     let json = {};
-    for (var x = 1; x <= maxColumn; x++) {
-      json[keys[x-1]] = sheet.getRange(y, x).getValue();
+    for (let x = 1; x <= maxColumn; x++) {
+      json[keys[x-1]] = sheetName.getRange(y, x).getValue();
     }
-    
     //データ格納
     data.push(json);
   }
 
-  //整形してテキストにします
-  return JSON.stringify(data, null, '\t');  
+  //整形してテキスト
+  addedJsonData = JSON.stringify(data, null, '\t');
+  console.log(addedJsonData);
+
+  createJsonFile(gasTestFolder, addedJsonData, faculty);
 }
 
 
-//スプレッドシート読み込み時に実行
-function onOpen() {
-  //メニューバーにJSON出力用メニューを追加
-  let spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-  let entries = [{
-    name : "JSONで出力",
-    functionName : "toJSON"
-  }];
-  spreadsheet.addMenu("JSON", entries);
-};
+function createJsonFile(gasTestFolder, contents, faculty) {  
+  const contentType = 'application/json';
+  // 文字コード
+  const charset = 'UTF-8';
+  // 出力先
+  const folder = DriveApp.getFolderById(gasTestFolder);
+  // Blob NOTE:出力後のJSONファイルをダウンロードした際に'facluty.json'となる　例：法文.json
+  const blobData = Utilities.newBlob('', contentType, faculty).setDataFromString(contents, charset);
+  // ファイルに保存
+  folder.createFile(blobData);
+}
+
+
+//学部ごとのJSONファイル出力
+function arangeEachFaclty(){
+  let facltyArray = ['法文','教育','総合理工','生物資源','人間科学','教養教育','人文科学','総合理工（博士後期）',
+  '教育学（教職）','自然科学','人間社会科学', '教育学'];
+
+  facltyArray.map(function(value){
+    fetchData(value)
+  })  
+}
+
+

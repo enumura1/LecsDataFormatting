@@ -6,15 +6,15 @@
       //ダウンロード実行
       function handleDownload() {
         //JSONデータの取得
-        var content = <?= getData(); ?>;
+        let content = <?= fetchData(); ?>;
         //ダウンロード用URL生成
-        var blob = new Blob([ content ], { "type" : "application/json"});
+        let blob = new Blob([ content ], { "type" : "application/json"});
         document.getElementById("download").href = window.URL.createObjectURL(blob);
       }
   </script>
   </head>
   <body>
     <!-- JSONダウンロードボタン：json名は適宜設定してください-->
-    <a id="download" href="#" download="jojo.json" onclick="handleDownload()">ダウンロード</a>
+    <a id="download" href="#" download="法文.json" onclick="handleDownload()">法文ダウンロード</a>
   </body>
 </html>
